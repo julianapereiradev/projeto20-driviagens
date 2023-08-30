@@ -6,5 +6,5 @@ const joi = baseJoi.extend(joiDate)
 export const flightSchema = joi.object({
     origin: joi.number().required(),
     destination: joi.number().required(),
-    date: joi.date().format("DD-MM-YYYY"),
+    date: joi.date().format("DD-MM-YYYY").required(),
 });
