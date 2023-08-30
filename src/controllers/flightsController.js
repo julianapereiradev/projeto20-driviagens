@@ -51,7 +51,15 @@ export async function postFlight(req, res) {
 
 export async function getFlights(req, res) {
   try {
-    const data = await getFlightsDB();
+    const originCity = req.query.origin;
+    const destinationCity = req.query.destination;
+
+    const data = await getFlightsDB(originCity, destinationCity);
+    
+    if (destinationCity && data.rows.length === 0) { // Verificar se a cidade de destino foi especificada e nenhum voo foi encontrado
+      return res.status(404).send("Sem viagens encontradas para este destino.");
+    }
+
     return res.send(data.rows);
   } catch (error) {
     console.log("Error em getFlights:", error);
