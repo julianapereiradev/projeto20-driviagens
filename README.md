@@ -16,4 +16,4 @@ Quando eu mudava para o formato brasileiro depois eu não conseguia mais fazer a
 Anotação: Da maneira como está eu só consigo testar passando rotas como smaller-date=2023-07-01&bigger-date=2023-09-30.
 Além disso a data não está chegando no formato dd-mm-aaaa
 
-3. Arquitetura e boas práticas ⭐
+3. Arquitetura e boas práticas (todo)
