@@ -4,7 +4,7 @@ import { signup, signin } from "../controllers/userController.js";
 import { signinSchema, signupSchema } from "../schemas/userSchema.js";
 
 const userRouter = Router()
-userRouter.get("/signup", signup);
+userRouter.post("/signup", validationschema(signupSchema), signup);
 userRouter.post("/signin", validationschema(signinSchema), signin);
 
 export default userRouter
