@@ -1,54 +1,49 @@
-import { db } from "../database/database.js";
 import dayjs from "dayjs";
+import { findCityDB, postFlightDB } from "../repositories/flightsRepository.js";
 
-  export async function postFlight(req, res) {
-    const { origin, destination, date } = req.body;
+export async function postFlight(req, res) {
 
-    try {
-// Verificar se a cidade de origem existe na tabela "cities"
-const originExistsQuery = `
-  SELECT * FROM cities WHERE id = $1;
-`;
-const originExistsValues = [origin];
-const originExistsResult = await db.query(originExistsQuery, originExistsValues);
+  const { origin, destination, date } = req.body;
 
-// Verificar se a cidade de destino existe na tabela "cities"
-const destinationExistsQuery = `
-  SELECT * FROM cities WHERE id = $1;
-`;
-const destinationExistsValues = [destination];
-const destinationExistsResult = await db.query(destinationExistsQuery, destinationExistsValues);
+  try {
+    const originExistsResult = await findCityDB(origin);
+    const destinationExistsResult = await findCityDB(destination);
 
-if (originExistsResult.rowCount === 0 || destinationExistsResult.rowCount === 0) {
-  return res.status(404).send("Este id nao existe em cidades");
-}
+    if (
+      originExistsResult.rowCount === 0 ||
+      destinationExistsResult.rowCount === 0
+    ) {
+      return res.status(404).send("Este id não existe no banco de cidades");
+    }
 
-// Verificar se os IDs de origem e destino são diferentes entre si
-if (origin === destination) {
-  return res.status(409).send("A origem e o destino do local precisam ser diferentes entre si")
-}
+    if (origin === destination) {
+      return res
+        .status(409)
+        .send(
+          "O local de origem/destino da viagem precisa ser diferente entre si"
+        );
+    }
 
- // Verificar se a data é maior que a data atual
- const currentDate = dayjs(); // Obtém a data e hora atuais
- const formattedCurrentDate = currentDate.format('DD-MM-YYYY');
+   const currentDate = new Date();
+    const formattedDateParts = date.split("-");
+    const inputDate = new Date(formattedDateParts[2], formattedDateParts[1] - 1, formattedDateParts[0]);
 
- const inputDate = date;
-
- console.log("Como chega a formattedCurrentDateatual:", formattedCurrentDate)
- console.log("Como chega a data que eu postei:", inputDate)
-
- if (inputDate <= formattedCurrentDate) {
-   return res.status(422).send("A data tem q ser superior a data de hoje");
+ if (inputDate <= currentDate) {
+  return res
+    .status(422)
+    .send("A data do voo deve ser maior do que a data atual");
  }
 
-  res.status(200).send("Deu certo")
 
-    } catch (error) {
-      console.log('Erro em postFlight', error);
-      return res.status(500).send(error);
-    }
-  }
+   // await postFlightDB(origin, destination, inputDate);
+    res.status(201).send("Voo cadastrado com sucesso!");
 
-  export async function getFlights(req, res) {
-    //
+  } catch (error) {
+    console.log("Erro em postFlight", error);
+    return res.status(500).send(error);
   }
+}
+
+export async function getFlights(req, res) {
+  //
+}
