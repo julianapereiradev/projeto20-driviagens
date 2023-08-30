@@ -27,21 +27,18 @@ export async function postFlight(req, res) {
         );
     }
 
-    const currentDate = new Date();
-    const formattedDateParts = date.split("-");
-    const inputDate = new Date(
-      formattedDateParts[2],
-      formattedDateParts[1] - 1,
-      formattedDateParts[0]
-    );
+    const currentDate = new Date(); //já está convertido em objeto Date
+    const dateParts = date.split('-'); // Separar os componentes da data
+    const inputDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`); // Converter para objeto Date
+    const timeDifference = inputDate - currentDate;
 
-    if (inputDate <= currentDate) {
+    if (timeDifference <= 0) {
       return res
         .status(422)
         .send("A data do voo deve ser maior do que a data atual");
     }
 
-    await postFlightDB(origin, destination, inputDate);
+   await postFlightDB(origin, destination, date);
     res.status(201).send("Voo cadastrado com sucesso!");
   } catch (error) {
     console.log("Erro em postFlight", error);
