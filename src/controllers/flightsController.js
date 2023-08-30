@@ -1,8 +1,11 @@
 import dayjs from "dayjs";
-import { findCityDB, postFlightDB } from "../repositories/flightsRepository.js";
+import {
+  findCityDB,
+  getFlightsDB,
+  postFlightDB,
+} from "../repositories/flightsRepository.js";
 
 export async function postFlight(req, res) {
-
   const { origin, destination, date } = req.body;
 
   try {
@@ -24,20 +27,22 @@ export async function postFlight(req, res) {
         );
     }
 
-   const currentDate = new Date();
+    const currentDate = new Date();
     const formattedDateParts = date.split("-");
-    const inputDate = new Date(formattedDateParts[2], formattedDateParts[1] - 1, formattedDateParts[0]);
+    const inputDate = new Date(
+      formattedDateParts[2],
+      formattedDateParts[1] - 1,
+      formattedDateParts[0]
+    );
 
- if (inputDate <= currentDate) {
-  return res
-    .status(422)
-    .send("A data do voo deve ser maior do que a data atual");
- }
+    if (inputDate <= currentDate) {
+      return res
+        .status(422)
+        .send("A data do voo deve ser maior do que a data atual");
+    }
 
-
-   await postFlightDB(origin, destination, inputDate);
+    await postFlightDB(origin, destination, inputDate);
     res.status(201).send("Voo cadastrado com sucesso!");
-
   } catch (error) {
     console.log("Erro em postFlight", error);
     return res.status(500).send(error);
@@ -45,5 +50,11 @@ export async function postFlight(req, res) {
 }
 
 export async function getFlights(req, res) {
-  //
+  try {
+    const data = await getFlightsDB();
+    return res.send(data.rows);
+  } catch (error) {
+    console.log("Error em getFlights:", error);
+    return res.status(500).send(error);
+  }
 }
