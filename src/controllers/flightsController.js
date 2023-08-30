@@ -35,7 +35,7 @@ export async function postFlight(req, res) {
  }
 
 
-   // await postFlightDB(origin, destination, inputDate);
+   await postFlightDB(origin, destination, inputDate);
     res.status(201).send("Voo cadastrado com sucesso!");
 
   } catch (error) {
