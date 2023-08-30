@@ -53,11 +53,22 @@ export async function getFlights(req, res) {
   try {
     const originCity = req.query.origin;
     const destinationCity = req.query.destination;
+    const smallerDate = req.query["smaller-date"];
+    const biggerDate = req.query["bigger-date"];
 
-    const data = await getFlightsDB(originCity, destinationCity);
+    if ((smallerDate && !biggerDate) || (!smallerDate && biggerDate)) {
+      return res.status(422).send("Os parâmetros smaller-date e bigger-date devem ser passados juntos.");
+    }
+
+    if (smallerDate && biggerDate && dayjs(smallerDate).isAfter(biggerDate)) {
+      return res.status(400).send("A data menor (smaller-date) não pode ser posterior à data maior (bigger-date).");
+    }
+
+
+  const data = await getFlightsDB(originCity, destinationCity, smallerDate, biggerDate);
     
     if (destinationCity && data.rows.length === 0) { // Verificar se a cidade de destino foi especificada e nenhum voo foi encontrado
-      return res.status(404).send("Sem viagens encontradas para este destino.");
+      return res.status(404).send("Not found");
     }
 
     return res.send(data.rows);

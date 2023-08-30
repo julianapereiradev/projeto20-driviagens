@@ -11,7 +11,7 @@ export async function postFlightDB(origin, destination, date) {
   );
 }
 
-export async function getFlightsDB(originCity, destinationCity) {
+export async function getFlightsDB(originCity, destinationCity, smallerDate, biggerDate) {
   let query = `SELECT
     flight.id,
     city1.name AS origin,
@@ -24,21 +24,24 @@ export async function getFlightsDB(originCity, destinationCity) {
   JOIN
     cities AS city2 ON flight.destination = city2.id`;
 
+  const queryParams = [];
+
   if (originCity) {
     query += ` WHERE city1.name = $1`;
+    queryParams.push(originCity);
   }
 
   if (destinationCity) {
-    query += originCity ? ` AND city2.name = $2` : ` WHERE city2.name = $1`;
+    query += originCity ? ` AND city2.name = $${queryParams.length + 1}` : ` WHERE city2.name = $1`;
+    queryParams.push(destinationCity);
+  }
+
+  if (smallerDate && biggerDate) {
+    query += ` AND flight.date >= $${queryParams.length + 1} AND flight.date <= $${queryParams.length + 2}`;
+    queryParams.push(smallerDate, biggerDate);
   }
 
   query += ` ORDER BY flight.date;`;
 
-  if (originCity && destinationCity) {
-    return await db.query(query, [originCity, destinationCity]); // Passar os valores das cidades como parâmetros
-  } else if (originCity || destinationCity) {
-    return await db.query(query, [originCity || destinationCity]);
-  } else {
-    return await db.query(query);
-  }
+  return await db.query(query, queryParams);
 }
