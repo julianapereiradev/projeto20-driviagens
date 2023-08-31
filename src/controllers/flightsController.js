@@ -63,13 +63,16 @@ export async function getFlights(req, res) {
         );
     }
 
+    let smallerDateParts = null;
+    let biggerDateParts = null;
+
     if (smallerDate && biggerDate) {
-      const smallerDateParts = smallerDate.split("-");
+      smallerDateParts = smallerDate.split("-");
       const inputSmallerDate = new Date(
         `${smallerDateParts[2]}-${smallerDateParts[1]}-${smallerDateParts[0]}`
       ); // Converter para objeto Date
 
-      const biggerDateParts = biggerDate.split("-");
+     biggerDateParts = biggerDate.split("-");
       const inputBiggerDate = new Date(
         `${biggerDateParts[2]}-${biggerDateParts[1]}-${biggerDateParts[0]}`
       ); // Converter para objeto Date
@@ -90,8 +93,8 @@ export async function getFlights(req, res) {
     const data = await getFlightsDB(
       originCity,
       destinationCity,
-      smallerDate,
-      biggerDate
+      smallerDateParts,
+      biggerDateParts
     );
 
    // Formatar as datas no formato "DD-MM-YYYY" antes de enviar a resposta
