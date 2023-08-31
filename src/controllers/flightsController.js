@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import {
   findCityDB,
   getFlightsDB,
@@ -28,8 +27,10 @@ export async function postFlight(req, res) {
     }
 
     const currentDate = new Date(); //já está convertido em objeto Date
-    const dateParts = date.split('-'); // Separar os componentes da data
-    const inputDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`); // Converter para objeto Date
+    const dateParts = date.split("-"); // Separar os componentes da data
+    const inputDate = new Date(
+      `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+    ); // Converter para objeto Date
     const timeDifference = inputDate - currentDate;
 
     if (timeDifference <= 0) {
@@ -38,7 +39,7 @@ export async function postFlight(req, res) {
         .send("A data do voo deve ser maior do que a data atual");
     }
 
-   await postFlightDB(origin, destination, date);
+    await postFlightDB(origin, destination, date);
     res.status(201).send("Voo cadastrado com sucesso!");
   } catch (error) {
     console.log("Erro em postFlight", error);
@@ -50,21 +51,50 @@ export async function getFlights(req, res) {
   try {
     const originCity = req.query.origin;
     const destinationCity = req.query.destination;
+
     const smallerDate = req.query["smaller-date"];
     const biggerDate = req.query["bigger-date"];
 
     if ((smallerDate && !biggerDate) || (!smallerDate && biggerDate)) {
-      return res.status(422).send("Os parâmetros smaller-date e bigger-date devem ser passados juntos.");
+      return res
+        .status(422)
+        .send(
+          "Ambos os parâmetros (smartDate e biggerDate) precisam ser passados juntos."
+        );
     }
 
-    if (smallerDate && biggerDate && dayjs(smallerDate).isAfter(biggerDate)) {
-      return res.status(400).send("A data menor (smaller-date) não pode ser posterior à data maior (bigger-date).");
+    if (smallerDate && biggerDate) {
+      const smallerDateParts = smallerDate.split("-");
+      const inputSmallerDate = new Date(
+        `${smallerDateParts[2]}-${smallerDateParts[1]}-${smallerDateParts[0]}`
+      ); // Converter para objeto Date
+
+      const biggerDateParts = biggerDate.split("-");
+      const inputBiggerDate = new Date(
+        `${biggerDateParts[2]}-${biggerDateParts[1]}-${biggerDateParts[0]}`
+      ); // Converter para objeto Date
+
+      if (
+        inputSmallerDate &&
+        inputBiggerDate &&
+        inputSmallerDate > inputBiggerDate
+      ) {
+        return res
+          .status(400)
+          .send(
+            "A data menor (smaller-date) não pode ser posterior à data maior (bigger-date)."
+          );
+      }
     }
 
+    const data = await getFlightsDB(
+      originCity,
+      destinationCity,
+      smallerDate,
+      biggerDate
+    );
 
-  const data = await getFlightsDB(originCity, destinationCity, smallerDate, biggerDate);
-    
-    if (destinationCity && data.rows.length === 0) { // Verificar se a cidade de destino foi especificada e nenhum voo foi encontrado
+    if (destinationCity && data.rows.length === 0) {
       return res.status(404).send("Not found");
     }
 

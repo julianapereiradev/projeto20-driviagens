@@ -1,7 +1,4 @@
-import baseJoi from 'joi';
-import joiDate from "@joi/date";
-
-const joi = baseJoi.extend(joiDate) 
+import joi from "joi";
 
 export const flightSchema = joi.object({
     origin: joi.number().required(),
