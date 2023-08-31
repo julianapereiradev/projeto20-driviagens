@@ -16,7 +16,7 @@ export async function getFlightsDB(originCity, destinationCity, smallerDate, big
     flight.id,
     city1.name AS origin,
     city2.name AS destination,
-    TO_CHAR(flight.date, 'DD-MM-YYYY') AS date
+    flight.date
   FROM
     flights AS flight
   JOIN

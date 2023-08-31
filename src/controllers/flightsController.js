@@ -94,11 +94,26 @@ export async function getFlights(req, res) {
       biggerDate
     );
 
-    if (destinationCity && data.rows.length === 0) {
-      return res.status(404).send("Not found");
-    }
+   // Formatar as datas no formato "DD-MM-YYYY" antes de enviar a resposta
+   const formattedData = data.rows.map(flight => {
+    const flightDate = new Date(flight.date);
+    const day = flightDate.getDate().toString().padStart(2, '0');
+    const month = (flightDate.getMonth() + 1).toString().padStart(2, '0'); // Mês começa de 0
+    const year = flightDate.getFullYear();
 
-    return res.send(data.rows);
+    return {
+      id: flight.id,
+      origin: flight.origin,
+      destination: flight.destination,
+      date: `${day}-${month}-${year}`
+    };
+  });
+
+  if (destinationCity && formattedData.length === 0) {
+    return res.status(404).send("Not found");
+  }
+
+  return res.send(formattedData);
   } catch (error) {
     console.log("Error em getFlights:", error);
     return res.status(500).send(error);
