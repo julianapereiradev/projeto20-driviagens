@@ -10,4 +10,18 @@ export function conflictError(element) {
 	  type: "ConflictError",
 	  message: `${element ? element : "It"} já existe!`
 	}
-  }
+}
+
+  export function badRequest(element) {
+	return {
+	  type: "BadRequestType",
+	  message: `${element ? element : "It"}`
+	}
+}
+
+export function internalServerError(element) {
+	return {
+	  type: "InternalServerError",
+	  message: `${element ? element : "It"}`
+	}
+}

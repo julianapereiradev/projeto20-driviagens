@@ -7,7 +7,7 @@ async function postPassengerDB(firstName, lastName) {
   );
 }
 
-export async function getPassengersTravelQtyDB(limit, offset, nameFilter) {
+async function getPassengersTravelQtyDB(limit, offset, nameFilter) {
   const query = `
     SELECT
       CONCAT("firstName", ' ', "lastName") AS passenger,
@@ -30,5 +30,6 @@ export async function getPassengersTravelQtyDB(limit, offset, nameFilter) {
 }
 
 export {
-  postPassengerDB
+  postPassengerDB,
+  getPassengersTravelQtyDB
 }
