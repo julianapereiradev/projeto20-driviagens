@@ -1,17 +1,17 @@
 import { db } from "../database/database.js";
 
-export async function findCityDB(originOrDestination) {
+ async function findCityDB(originOrDestination) {
   return db.query(`SELECT * FROM cities WHERE id=$1`, [originOrDestination]);
 }
 
-export async function postFlightDB(origin, destination, date) {
+ async function postFlightDB(origin, destination, date) {
   return await db.query(
     `INSERT INTO flights ("origin", "destination", "date") VALUES ($1, $2, $3);`,
     [origin, destination, date]
   );
 }
 
-export async function getFlightsDB(originCity, destinationCity, smallerDate, biggerDate) {
+ async function getFlightsDB(originCity, destinationCity, smallerDate, biggerDate) {
   let query = `SELECT
     flight.id,
     city1.name AS origin,
@@ -44,4 +44,10 @@ export async function getFlightsDB(originCity, destinationCity, smallerDate, big
   query += ` ORDER BY flight.date;`;
 
   return await db.query(query, queryParams);
+}
+
+export {
+  findCityDB,
+  postFlightDB,
+  getFlightsDB
 }

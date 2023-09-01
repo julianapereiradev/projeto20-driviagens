@@ -8,7 +8,7 @@ export function notFoundError(entity) {
 export function conflictError(element) {
 	return {
 	  type: "ConflictError",
-	  message: `${element ? element : "It"} já existe!`
+	  message: `${element ? element : "It"}`
 	}
 }
 
@@ -25,3 +25,13 @@ export function internalServerError(element) {
 	  message: `${element ? element : "It"}`
 	}
 }
+
+export function unprocessableEntity(element) {
+	return {
+	  type: "UnprocessableEntity",
+	  message: `${element ? element : "It"}`
+	}
+}
+
+
+

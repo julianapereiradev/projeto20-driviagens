@@ -1,51 +1,66 @@
 import {
-  findCityDB,
   getFlightsDB,
-  postFlightDB,
 } from "../repositories/flightsRepository.js";
+import * as flightsService from "../services/flightsService.js";
+import httpStatus from "http-status";
+
+
+//export async function postFlight(req, res) {
+//  const { origin, destination, date } = req.body;
+//
+//  try {
+//    const originExistsResult = await findCityDB(origin);
+//    const destinationExistsResult = await findCityDB(destination);
+//
+//    if (
+//      originExistsResult.rowCount === 0 ||
+//      destinationExistsResult.rowCount === 0
+//    ) {
+//      return res.status(404).send("Este id não existe no banco de cidades");
+//    }
+//
+//    if (origin === destination) {
+//      return res
+//        .status(409)
+//        .send(
+//          "O local de origem/destino da viagem precisa ser diferente entre si"
+//        );
+//    }
+//
+//    const currentDate = new Date(); 
+//    const dateParts = date.split("-");
+//    const inputDate = new Date(
+//      `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+//    );
+//    const timeDifference = inputDate - currentDate;
+//
+//    if (timeDifference <= 0) {
+//      return res
+//        .status(422)
+//        .send("A data do voo deve ser maior do que a data atual");
+//    }
+//
+//    await postFlightDB(origin, destination, date);
+//    res.status(201).send("Voo cadastrado com sucesso!");
+//  } catch (error) {
+//    console.log("Erro em postFlight", error);
+//    return res.status(500).send(error);
+//  }
+//}
 
 export async function postFlight(req, res) {
   const { origin, destination, date } = req.body;
 
-  try {
-    const originExistsResult = await findCityDB(origin);
-    const destinationExistsResult = await findCityDB(destination);
+    const postflights = await flightsService.postFlightService(origin, destination, date);
 
-    if (
-      originExistsResult.rowCount === 0 ||
-      destinationExistsResult.rowCount === 0
-    ) {
-      return res.status(404).send("Este id não existe no banco de cidades");
+   if (postflights === null) {
+      return res.sendStatus(httpStatus.BAD_REQUEST)
     }
 
-    if (origin === destination) {
-      return res
-        .status(409)
-        .send(
-          "O local de origem/destino da viagem precisa ser diferente entre si"
-        );
-    }
-
-    const currentDate = new Date(); //já está convertido em objeto Date
-    const dateParts = date.split("-"); // Separar os componentes da data
-    const inputDate = new Date(
-      `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
-    ); // Converter para objeto Date
-    const timeDifference = inputDate - currentDate;
-
-    if (timeDifference <= 0) {
-      return res
-        .status(422)
-        .send("A data do voo deve ser maior do que a data atual");
-    }
-
-    await postFlightDB(origin, destination, date);
-    res.status(201).send("Voo cadastrado com sucesso!");
-  } catch (error) {
-    console.log("Erro em postFlight", error);
-    return res.status(500).send(error);
-  }
+    res.sendStatus(httpStatus.CREATED);
 }
+
+
 
 export async function getFlights(req, res) {
   try {
@@ -70,12 +85,12 @@ export async function getFlights(req, res) {
       const smallerDateParts = smallerDate.split("-");
      inputSmallerDate = new Date(
         `${smallerDateParts[2]}-${smallerDateParts[1]}-${smallerDateParts[0]}`
-      ); // Converter para objeto Date
+      );
 
      const biggerDateParts = biggerDate.split("-");
      inputBiggerDate = new Date(
         `${biggerDateParts[2]}-${biggerDateParts[1]}-${biggerDateParts[0]}`
-      ); // Converter para objeto Date
+      );
 
       if (
         inputSmallerDate &&
