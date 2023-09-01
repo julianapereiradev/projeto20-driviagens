@@ -1,5 +1,6 @@
 import * as passengersService from "../services/passengersService.js";
 import httpStatus from "http-status";
+import {getPassengersTravelQtyDB} from "../repositories/passengersRepository.js"
 
 export async function postPassenger(req, res) {
   const { firstName, lastName } = req.body;
