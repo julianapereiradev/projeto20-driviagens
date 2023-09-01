@@ -4,5 +4,3 @@
 
 3. Arquitetura e boas práticas 
 (em ordem do que fazer primeiro)
-
-3- GET /flights
