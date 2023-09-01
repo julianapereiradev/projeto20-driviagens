@@ -1,19 +1,15 @@
-import {
-  getPassengersTravelQtyDB,
-  postPassengerDB,
-} from "../repositories/passengersRepository.js";
+import * as passengersService from "../services/passengersService.js";
+import httpStatus from "http-status";
 
 export async function postPassenger(req, res) {
   const { firstName, lastName } = req.body;
+ 
+    const passenger = await passengersService.postPassengerService(firstName, lastName);
 
-  try {
-    await postPassengerDB(firstName, lastName);
-
-    res.status(201).send("Passageiro Cadastrado");
-  } catch (error) {
-    console.log("Erro em postPassenger", error);
-    return res.status(500).send(error);
-  }
+    if (passenger  === null) {
+      return res.sendStatus(httpStatus.BAD_REQUEST)
+    }
+    res.sendStatus(httpStatus.CREATED);
 }
 
 export async function getPassengersTravelQty(req, res) {
