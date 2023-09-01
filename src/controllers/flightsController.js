@@ -30,7 +30,7 @@ export async function getFlights(req, res) {
       return res.status(httpStatus.NOT_FOUND).send("Not found");
     }
 
-    res.status(httpStatus.CREATED).send(flights);
+    res.status(httpStatus.OK).send(flights);
 }
 
 //export async function getFlights(req, res) {

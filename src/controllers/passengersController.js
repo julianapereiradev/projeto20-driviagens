@@ -23,5 +23,5 @@ export async function getPassengersTravelQty(req, res) {
     if (passengers  === null) {
       return res.sendStatus(httpStatus.BAD_REQUEST)
     }
-    res.status(httpStatus.CREATED).send(passengers);
+    res.status(httpStatus.OK).send(passengers);
 }
