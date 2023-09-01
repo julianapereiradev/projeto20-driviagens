@@ -19,7 +19,8 @@ export async function postPassenger(req, res) {
 export async function getPassengersTravelQty(req, res) {
   try {
     const name = req.query.name || "";
-    const page = parseInt(req.query.page);
+    const page = req.query.page !== undefined ? parseInt(req.query.page) : 1;
+
 
     if (isNaN(page) || page <= 0) {
       return res.status(400).send("Invalid page value");
