@@ -13,4 +13,4 @@ Tanto no localhost como no deploy não está pegando o seguinte tópico:
 
 POST/flights
 
-- Somento no deploy não aceita postar por exemplo 13-05-2023 porque ele está entendendo como MM-DD-YYYY
+- Somente no deploy não aceita postar por exemplo 13-05-2023 porque ele está entendendo como MM-DD-YYYY

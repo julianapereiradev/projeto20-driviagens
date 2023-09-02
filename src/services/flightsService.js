@@ -1,10 +1,12 @@
 import { badRequest, conflictError, notFoundError, unprocessableEntity } from "../errors/errors.js";
 import * as flightsRepository from "../repositories/flightsRepository.js"
-  
+
+let inputDate = null
+
 async function validateFlightDate(date) {
   const currentDate = new Date();
   const dateParts = date.split("-");
-  const inputDate = new Date(
+   inputDate = new Date(
   `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
   );
   const timeDifference = inputDate - currentDate;
@@ -47,7 +49,7 @@ async function validateFlightDate(date) {
       await validateSearchParams(origin, destination);
       await validateFlightDate(date);
   
-      return flightsRepository.postFlightDB(origin, destination, date);
+      return flightsRepository.postFlightDB(origin, destination, inputDate);
     
   }
 
