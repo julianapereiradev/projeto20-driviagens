@@ -4,9 +4,11 @@ import * as flightsRepository from "../repositories/flightsRepository.js"
   async function validateFlightDate(date) {
     const currentDate = new Date();
     const dateParts = date.split("-");
-    const inputDate = new Date(
-    `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
-    );
+    const day = parseInt(dateParts[0], 10); // Parse o dia como número inteiro
+    const month = parseInt(dateParts[1], 10) - 1; // Parse o mês como número inteiro (subtraindo 1, pois os meses em JavaScript são baseados em zero)
+    const year = parseInt(dateParts[2], 10);
+
+    const inputDate = new Date(year, month, day);
     const timeDifference = inputDate - currentDate;
   
     if (timeDifference <= 0) throw unprocessableEntity('A data do voo deve ser maior do que a data atual')
